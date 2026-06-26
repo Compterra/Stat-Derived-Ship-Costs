@@ -1,0 +1,246 @@
+{
+  "economy": {
+    "shipBuyPriceMult": 1.2,
+    "shipSellPriceMult": 0.4,
+    "hullWithDModsSellPriceMult": 0.2,
+    "shipWeaponBuyPriceMult": 1.2,
+    "shipWeaponSellPriceMult": 0.5,
+    "blueprintPriceOriginalShipMult": 0.5,
+    "shipProductionCostBase": 1000,
+    "productionCostMult": 1.0,
+    "storageFreeFraction": 0.01
+  },
+  "runtime": {
+    "enablePricingHooks": true,
+    "pricingMode": "Full Market",
+    "debugReports": true,
+    "hullValueMult": 1.0,
+    "loadoutValueMult": 1.0,
+    "marketContextStrength": 1.0,
+    "enableFuelPressure": true,
+    "compatibility": {
+      "enableNexerelinContext": true,
+      "enableStarshipLegendsRarity": true,
+      "preferFinalStatRead": true,
+      "enableConsoleDebugHooks": false
+    }
+  },
+  "safety": {
+    "buyChannelMinMult": 0.55,
+    "buyChannelMaxMult": 1.35,
+    "enableTransactionGuard": true,
+    "enableSaleGuard": true,
+    "shipSalePayoutCapMult": 0.62
+  },
+  "hullSizeFloor": {
+    "FRIGATE": 3000,
+    "DESTROYER": 10000,
+    "CRUISER": 30000,
+    "CAPITAL_SHIP": 80000
+  },
+  "armorSizeMult": {
+    "FRIGATE": 8,
+    "DESTROYER": 14,
+    "CRUISER": 24,
+    "CAPITAL_SHIP": 38
+  },
+  "speedSizeMult": {
+    "FRIGATE": 90,
+    "DESTROYER": 120,
+    "CRUISER": 170,
+    "CAPITAL_SHIP": 260
+  },
+  "shieldSizeBase": {
+    "FRIGATE": 2500,
+    "DESTROYER": 6000,
+    "CRUISER": 14000,
+    "CAPITAL_SHIP": 32000
+  },
+  "shieldGeometryMult": {
+    "FRONT": 1.0,
+    "OMNI": 1.2
+  },
+  "phaseCloakSizeBase": {
+    "FRIGATE": 12000,
+    "DESTROYER": 30000,
+    "CRUISER": 85000,
+    "CAPITAL_SHIP": 220000
+  },
+  "slotBase": {
+    "SMALL": 900,
+    "MEDIUM": 3200,
+    "LARGE": 11000
+  },
+  "mountMult": {
+    "BALLISTIC": 1.0,
+    "ENERGY": 1.08,
+    "MISSILE": 0.95,
+    "HYBRID": 1.18,
+    "SYNERGY": 1.18,
+    "COMPOSITE": 1.18,
+    "UNIVERSAL": 1.3,
+    "DECORATIVE": 0.0,
+    "SYSTEM": 0.0
+  },
+  "weights": {
+    "hitpoints": 0.45,
+    "maxFlux": 0.2,
+    "fluxDissipation": 16,
+    "acceleration": 5,
+    "deceleration": 5,
+    "maxTurnRate": 8,
+    "turnAcceleration": 8,
+    "ordnancePoints": 450,
+    "fighterBay": 12000,
+    "cargo": 45,
+    "fuel": 35,
+    "crewRange": 25,
+    "fuelPerLightYearPenalty": 350,
+    "suppliesPerMonthPenalty": 900,
+    "suppliesToRecoverPenalty": 150,
+    "vent": 250,
+    "capacitor": 180,
+    "hullmodBaseValueFraction": 0.2
+  },
+  "systemValueBands": {
+    "NONE": 0,
+    "MOBILITY": 4000,
+    "UTILITY": 4000,
+    "DEFENSIVE": 7000,
+    "OFFENSIVE": 9000,
+    "PHASE_SKIMMER": 9000,
+    "PHASE_TELEPORTER": 35000,
+    "UNIQUE": 0
+  },
+  "condition": {
+    "dModDiscountPerMod": 0.20,
+    "dModDiscountPerModSizeMult": {
+      "FRIGATE": 1.0,
+      "DESTROYER": 0.9,
+      "CRUISER": 0.8,
+      "CAPITAL_SHIP": 0.7
+    },
+    "dModDiscountFloor": 0.05,
+    "dModDiscountFloorBySize": {
+      "FRIGATE": 0.05,
+      "DESTROYER": 0.05,
+      "CRUISER": 0.05,
+      "CAPITAL_SHIP": 0.22
+    },
+    "dHullMinimumDModCount": 4.0,
+    "damagedHullFloorFraction": 0.02,
+    "structuralDModExtraPenalty": 0.08,
+    "maxStructuralDModExtraPenalty": 0.2,
+    "sModFaceValueFraction": 0.0,
+    "sModCountPremium": {
+      "FRIGATE": 0,
+      "DESTROYER": 0,
+      "CRUISER": 0,
+      "CAPITAL_SHIP": 0
+    }
+  },
+  "marketContext": {
+    "sectorBaselineFuelPrice": 25,
+    "fuelPriceSensitivity": 0.18,
+    "fuelPriceDiscountFloor": 0.8,
+    "fuelPricePremiumCap": 1.05,
+    "hullSizeReferenceFuelPerLightYear": {
+      "FRIGATE": 1,
+      "DESTROYER": 2,
+      "CRUISER": 4,
+      "CAPITAL_SHIP": 8
+    },
+    "economicCycleMult": {
+      "BOOM": 1.08,
+      "NORMAL": 1.0,
+      "RECESSION": 0.9,
+      "WAR_MOBILIZATION": 1.12,
+      "POST_WAR_SURPLUS": 0.92
+    },
+    "demandSensitivity": 0.12,
+    "supplySensitivity": 0.1,
+    "rarityValueSensitivity": 0.25,
+    "rareHullDModFloor": 0.45,
+    "rarityTags": {
+      "rare_bp": 0.4,
+      "no_dealer": 0.35,
+      "restricted": 0.3,
+      "phase": 0.25,
+      "xiv": 0.2,
+      "prototype": 0.25,
+      "remnant": 0.35,
+      "omega": 0.5
+    }
+  },
+  "marketChannels": {
+    "OPEN": {
+      "baseMult": 1.0,
+      "commissionTaxReliefMax": 0.18,
+      "commissionTaxReliefMinRelation": 25,
+      "commissionTaxReliefMaxRelation": 75,
+      "rarityPremiumSensitivity": 0.12
+    },
+    "MILITARY": {
+      "militaryHullBaseMult": 0.92,
+      "civilianHullBaseMult": 0.55,
+      "relationDiscountMax": 0.25,
+      "relationDiscountMinRelation": 0,
+      "relationDiscountMaxRelation": 100,
+      "commissionDiscount": 0.12,
+      "rarityPremiumSensitivity": 0.18
+    },
+    "BLACK": {
+      "baseMult": 0.78,
+      "riskDiscountMult": 0.95,
+      "rarityPremiumSensitivity": 0.35,
+      "dModToleranceBonus": 0.08
+    }
+  },
+  "saleChannels": {
+    "OPEN": {
+      "baseMult": 0.58,
+      "dModExtraPenaltyPerMod": 0.06,
+      "rarityOfferSensitivity": 0.12,
+      "profitGuardMult": 0.95
+    },
+    "MILITARY": {
+      "baseMult": 0.62,
+      "factionMatchBonus": 0.2,
+      "doctrineCompatibleBonus": 0.1,
+      "relationBonusMax": 0.15,
+      "relationBonusMinRelation": 0,
+      "relationBonusMaxRelation": 100,
+      "commissionBonus": 0.08,
+      "civilianHullPenalty": 0.3,
+      "logisticsHullPenalty": 0.12,
+      "enemyDoctrinePenalty": 0.18,
+      "rarityOfferSensitivity": 0.18
+    },
+    "BLACK": {
+      "baseMult": 0.66,
+      "trashFloor": 0.25,
+      "dModToleranceBonus": 0.05,
+      "rarityOfferSensitivity": 0.35,
+      "restrictedHullBonus": 0.12,
+      "quickCashMult": 0.95
+    }
+  },
+  "calibration": {
+    "hullSizeValueMult": {
+      "FRIGATE": 0.32,
+      "DESTROYER": 0.45,
+      "CRUISER": 0.68,
+      "CAPITAL_SHIP": 1.0
+    },
+    "civgradeValueMult": 0.45,
+    "phaseCloakValueMult": {
+      "FRIGATE": 1.0,
+      "DESTROYER": 1.0,
+      "CRUISER": 1.0,
+      "CAPITAL_SHIP": 1.0
+    },
+    "systemIdValueMult": {
+      "phaseteleporter": 5.5
+    }
+  }
+}

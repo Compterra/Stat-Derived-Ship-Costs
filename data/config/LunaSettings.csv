@@ -1,0 +1,56 @@
+fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValue,maxValue,tab
+sdsc_general_header,General,Header,General,,,,,General
+sdsc_enable_pricing,Enable pricing hooks,Boolean,true,,"Master switch for runtime price hooks once implementation exists.",,,General
+sdsc_pricing_mode,Pricing mode,Radio,Full Market,"Report Only,Hull Only,Full Appraisal,Full Market","Controls how far runtime pricing should go. Report Only should not change prices.",,,General
+sdsc_debug_reports,Write debug reports,Boolean,true,,"Write per-hull and per-transaction pricing diagnostics to the log or report file.",,,General
+,,,,,,,,
+sdsc_appraisal_header,Appraisal,Header,Appraisal,,,,,Appraisal
+sdsc_hull_value_mult,Hull value multiplier,Double,1.0,,"Global multiplier for computed hull stat value after formula calibration.",0.1,5.0,Appraisal
+sdsc_loadout_value_mult,Loadout value multiplier,Double,1.0,,"Global multiplier for fitted weapons fighters vents capacitors and hullmods.",0.0,5.0,Appraisal
+sdsc_dmod_discount_per_mod,D-mod discount per mod,Double,0.20,,"Condition discount applied per visible or built-in D-mod before floors and rarity protection.",0.0,0.5,Appraisal
+sdsc_dmod_scale_frigate,D-mod scale frigate,Double,1.0,,"Multiplier applied to D-mod discount severity for frigates.",0.0,2.0,Appraisal
+sdsc_dmod_scale_destroyer,D-mod scale destroyer,Double,0.9,,"Multiplier applied to D-mod discount severity for destroyers.",0.0,2.0,Appraisal
+sdsc_dmod_scale_cruiser,D-mod scale cruiser,Double,0.8,,"Multiplier applied to D-mod discount severity for cruisers.",0.0,2.0,Appraisal
+sdsc_dmod_scale_capital,D-mod scale capital,Double,0.7,,"Multiplier applied to D-mod discount severity for capitals.",0.0,2.0,Appraisal
+sdsc_dmod_discount_floor,D-mod discount floor,Double,0.05,,"Lowest condition multiplier for common damaged hulls.",0.0,1.0,Appraisal
+sdsc_dhull_min_dmods,D-hull minimum D-mod count,Double,4.0,,"Fallback condition damage count for generated D-hull specs when no live market member listing is available.",0.0,6.0,Appraisal
+sdsc_rare_dmod_floor,Rare hull D-mod floor,Double,0.45,,"Condition floor approached by high-rarity damaged hulls.",0.0,1.0,Appraisal
+sdsc_smod_face_value,S-mod face value fraction,Double,0.0,,"Direct resale value for S-mod investment. Keep at 0 to value only final stats and loadout.",0.0,1.0,Appraisal
+,,,,,,,,
+sdsc_market_header,Market Context,Header,Market Context,,,,,Market Context
+sdsc_market_context_strength,Market context strength,Double,1.0,,"Scales fuel economy supply demand and rarity effects around neutral value.",0.0,3.0,Market Context
+sdsc_fuel_pressure,Enable fuel pressure,Boolean,true,,"Expensive fuel discounts high fuel-per-light-year ships.",,,Market Context
+sdsc_fuel_sensitivity,Fuel price sensitivity,Double,0.18,,"How strongly expensive fuel pushes down thirsty ship prices.",0.0,1.0,Market Context
+sdsc_demand_sensitivity,Demand sensitivity,Double,0.12,,"How strongly local demand raises local ship prices.",0.0,1.0,Market Context
+sdsc_supply_sensitivity,Supply sensitivity,Double,0.10,,"How strongly local supply gluts create deals.",0.0,1.0,Market Context
+sdsc_rarity_sensitivity,Rarity value sensitivity,Double,0.25,,"How much scarce or prestige hulls gain from rarity.",0.0,1.0,Market Context
+,,,,,,,,
+sdsc_buy_header,Buy Channels,Header,Buy Channels,,,,,Buy Channels
+sdsc_open_buy_base,Open market base,Double,1.0,,"Competitive legal sticker multiplier before vanilla tariff.",0.5,2.0,Buy Channels
+sdsc_open_commission_relief,Open commission tax relief,Double,0.18,,"Maximum markup or tax relief for a commission with the owning faction.",0.0,0.5,Buy Channels
+sdsc_military_combat_base,Military combat base,Double,0.92,,"Base multiplier for military-grade hulls in military markets.",0.3,2.0,Buy Channels
+sdsc_military_civilian_base,Military civilian base,Double,0.55,,"Base multiplier for civilian surplus in military markets.",0.1,2.0,Buy Channels
+sdsc_military_relation_discount,Military relation discount cap,Double,0.25,,"Maximum buy discount from high faction relationship.",0.0,0.6,Buy Channels
+sdsc_military_commission_discount,Military commission discount,Double,0.12,,"Additional military-market buy discount for commissioned players.",0.0,0.5,Buy Channels
+sdsc_black_buy_base,Black market base,Double,0.78,,"Base black-market buy multiplier before rarity and risk effects.",0.2,2.0,Buy Channels
+sdsc_black_buy_rarity,Black market rarity premium,Double,0.35,,"How strongly rare hulls get bid up on the black market.",0.0,1.0,Buy Channels
+sdsc_black_risk_discount,Black market risk discount,Double,0.95,,"Discount for uncertain provenance and legal risk.",0.5,1.2,Buy Channels
+sdsc_black_buy_dmod_tolerance,Black market D-mod tolerance,Double,0.08,,"How much black-market sellers resist discounting damaged hulls beyond the appraisal hit.",0.0,0.5,Buy Channels
+,,,,,,,,
+sdsc_sale_header,Sale Channels,Header,Sale Channels,,,,,Sale Channels
+sdsc_open_sale_base,Open sale base,Double,0.58,,"Open-market dealer offer multiplier before condition and rarity details.",0.1,1.5,Sale Channels
+sdsc_open_sale_dmod_penalty,Open sale D-mod penalty,Double,0.06,,"Extra open-market sale penalty per D-mod because legal dealers dislike damaged stock.",0.0,0.3,Sale Channels
+sdsc_open_profit_guard,Open profit guard,Double,0.95,,"Extra guardrail that keeps ordinary open-market resale below dealer profit.",0.5,1.2,Sale Channels
+sdsc_military_sale_base,Military sale base,Double,0.62,,"Military-market offer multiplier before doctrine relation and commission effects.",0.1,1.5,Sale Channels
+sdsc_military_faction_bonus,Military faction-match bonus,Double,0.20,,"Bonus for selling hulls that match the buying faction.",0.0,0.8,Sale Channels
+sdsc_military_relation_bonus,Military relation bonus cap,Double,0.15,,"Maximum sale offer bonus from high faction relationship.",0.0,0.5,Sale Channels
+sdsc_military_civilian_penalty,Military civilian penalty,Double,0.30,,"Penalty for selling low-priority civilian hulls into military procurement.",0.0,0.8,Sale Channels
+sdsc_black_sale_base,Black sale base,Double,0.66,,"Black-market offer multiplier before trash rarity and restricted-hull effects.",0.1,1.5,Sale Channels
+sdsc_black_trash_floor,Black trash floor,Double,0.25,,"Minimum quick-cash offer for junk hulls the black market will still take.",0.0,1.0,Sale Channels
+sdsc_black_sale_rarity,Black sale rarity premium,Double,0.35,,"How strongly rare ships improve black-market sale offers.",0.0,1.0,Sale Channels
+,,,,,,,,
+sdsc_compat_header,Compatibility,Header,Compatibility,,,,,Compatibility
+sdsc_enable_nexerelin_context,Use Nexerelin context if present,Boolean,true,,"Use Nexerelin war faction and dynamic-market context when the mod is installed.",,,Compatibility
+sdsc_enable_starship_legends_rarity,Use Starship Legends reputation if present,Boolean,true,,"Treat ship reputation or fame as a rarity and prestige signal when available.",,,Compatibility
+sdsc_enable_final_stat_read,Prefer final stat read,Boolean,true,,"When the hook surface allows it appraise final member stats after other mods have modified the ship.",,,Compatibility
+sdsc_enable_console_debug,Console debug hooks,Boolean,false,,"Enable planned Console Commands helpers when the optional console library is present.",,,Compatibility

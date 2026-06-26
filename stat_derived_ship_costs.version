@@ -1,0 +1,13 @@
+{
+    "masterVersionFile":"https://raw.githubusercontent.com/Compterra/Stat-Derived-Ship-Costs/main/stat_derived_ship_costs.version",
+    "modName":"Stat-Derived Ship Costs",
+    "modVersion":
+    {
+        "major":1,
+        "minor":0,
+        "patch":0
+    },
+    "starsectorVersion":"0.98a-RC8",
+    "directDownloadURL":"https://github.com/Compterra/Stat-Derived-Ship-Costs/releases/latest/download/Stat-Derived-Ship-Costs.zip",
+    "changelogURL":"https://raw.githubusercontent.com/Compterra/Stat-Derived-Ship-Costs/main/CHANGELOG.md"
+}

@@ -1,0 +1,17 @@
+# Build outputs
+build/
+*.class
+
+# Local editor/project state
+.idea/
+.vscode/
+*.iml
+
+# Starsector/runtime noise
+*.log
+sdsc_hull_value_report.csv
+
+# Release archives are generated separately from source control.
+*.zip
+*.7z
+*.rar
