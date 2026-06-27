@@ -12,15 +12,21 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import org.apache.log4j.Logger;
 
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class SDSCMarketListener implements SubmarketUpdateListener, SubmarketInteractionListener {
     private static final Logger LOG = Global.getLogger(SDSCMarketListener.class);
+    private static final long MIN_CARGO_UPDATE_REPRICE_INTERVAL_MS = 750L;
+    private static final Map<SubmarketAPI, Long> LAST_CARGO_UPDATE_REPRICE = new IdentityHashMap<SubmarketAPI, Long>();
 
     @Override
     public void reportSubmarketCargoAndShipsUpdated(SubmarketAPI submarket) {
+        if (isRapidCargoUpdate(submarket)) {
+            return;
+        }
         repriceSubmarket(submarket, "submarket-cargo-updated", true);
     }
 
@@ -169,6 +175,18 @@ public class SDSCMarketListener implements SubmarketUpdateListener, SubmarketInt
         return cargo;
     }
 
+    private static boolean isRapidCargoUpdate(SubmarketAPI submarket) {
+        if (submarket == null) {
+            return false;
+        }
+        long now = System.currentTimeMillis();
+        Long last = LAST_CARGO_UPDATE_REPRICE.get(submarket);
+        if (last != null && now - last < MIN_CARGO_UPDATE_REPRICE_INTERVAL_MS) {
+            return true;
+        }
+        LAST_CARGO_UPDATE_REPRICE.put(submarket, now);
+        return false;
+    }
     private static String marketName(SubmarketAPI submarket) {
         MarketAPI market = submarket.getMarket();
         if (market == null) {

@@ -75,25 +75,23 @@ public class SDSCModPlugin extends BaseModPlugin {
                 listeners.addListener(new SDSCMarketListener(), true);
                 LOG.info("Registered Stat-Derived Ship Costs submarket listener.");
             }
-            if (!hasTransactionGuard(sector)) {
-                sector.addListener(new SDSCTransactionGuard());
-                LOG.info("Registered Stat-Derived Ship Costs transaction guard.");
-            }
+            replaceTransactionGuardWithTransient(sector);
         } catch (Throwable ex) {
             LOG.warn("Unable to register Stat-Derived Ship Costs campaign listeners.", ex);
         }
     }
 
-    private static boolean hasTransactionGuard(SectorAPI sector) {
+    private static void replaceTransactionGuardWithTransient(SectorAPI sector) {
         if (sector == null || sector.getAllListeners() == null) {
-            return false;
+            return;
         }
-        for (CampaignEventListener listener : sector.getAllListeners()) {
+        for (CampaignEventListener listener : new ArrayList<CampaignEventListener>(sector.getAllListeners())) {
             if (listener instanceof SDSCTransactionGuard) {
-                return true;
+                sector.removeListener(listener);
             }
         }
-        return false;
+        sector.addTransientListener(new SDSCTransactionGuard());
+        LOG.info("Registered Stat-Derived Ship Costs transient transaction guard.");
     }
 
     static void runPricingPass(String reason) {

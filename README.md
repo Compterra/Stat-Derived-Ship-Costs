@@ -14,7 +14,7 @@ Current scope:
 - map the result back onto vanilla economy multipliers for market buy and market sell
 - keep blueprint, storage, production, and exact loadout pricing documented for future passes
 
-Version `1.0.0` defaults to LunaLib `Full Market` mode, evaluates loaded hull specs, applies the hull base-value pricing pass, registers a submarket listener for exact listed D-mod counts and buy-channel storefront pricing, registers a transaction guard against stale-tab buy/sell cheese, applies open/military/black sale-channel payouts, and writes `sdsc_hull_value_report.csv` to `Starsector/saves/common`.
+Version `1.0.1` defaults to LunaLib `Full Market` mode, evaluates loaded hull specs, applies the hull base-value pricing pass, registers a submarket listener for exact listed D-mod counts and buy-channel storefront pricing, registers a transaction guard against stale-tab buy/sell cheese, applies open/military/black sale-channel payouts, and writes `sdsc_hull_value_report.csv` to `Starsector/saves/common`.
 
 Current project files:
 
@@ -38,4 +38,4 @@ TriOS and Version Checker:
 
 - `data/config/version/version_files.csv` points at `stat_derived_ship_costs.version`.
 - `stat_derived_ship_costs.version` points at the raw online master file on GitHub.
-- Release downloads should be attached as `Stat-Derived-Ship-Costs.zip` on the latest GitHub release.
+- The current Version Checker download URL points at the repository copy: `https://raw.githubusercontent.com/Compterra/Stat-Derived-Ship-Costs/main/Stat-Derived-Ship-Costs.zip`.
