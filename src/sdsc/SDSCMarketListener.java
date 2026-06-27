@@ -19,12 +19,11 @@ import java.util.Map;
 
 public class SDSCMarketListener implements SubmarketUpdateListener, SubmarketInteractionListener {
     private static final Logger LOG = Global.getLogger(SDSCMarketListener.class);
-    private static final long MIN_CARGO_UPDATE_REPRICE_INTERVAL_MS = 750L;
-    private static final Map<SubmarketAPI, Long> LAST_CARGO_UPDATE_REPRICE = new IdentityHashMap<SubmarketAPI, Long>();
+    private static final Map<SubmarketAPI, String> LAST_CARGO_UPDATE_SIGNATURE = new IdentityHashMap<SubmarketAPI, String>();
 
     @Override
     public void reportSubmarketCargoAndShipsUpdated(SubmarketAPI submarket) {
-        if (isRapidCargoUpdate(submarket)) {
+        if (shouldSkipCargoUpdateReprice(submarket)) {
             return;
         }
         repriceSubmarket(submarket, "submarket-cargo-updated", true);
@@ -71,6 +70,7 @@ public class SDSCMarketListener implements SubmarketUpdateListener, SubmarketInt
         if (members == null || members.isEmpty()) {
             return 0;
         }
+        rememberCargoUpdateSignature(submarket, members);
 
         SDSCFormula formula = new SDSCFormula(settings);
         SDSCMarketPricing marketPricing = new SDSCMarketPricing(settings);
@@ -175,18 +175,62 @@ public class SDSCMarketListener implements SubmarketUpdateListener, SubmarketInt
         return cargo;
     }
 
-    private static boolean isRapidCargoUpdate(SubmarketAPI submarket) {
+    private static boolean shouldSkipCargoUpdateReprice(SubmarketAPI submarket) {
         if (submarket == null) {
-            return false;
-        }
-        long now = System.currentTimeMillis();
-        Long last = LAST_CARGO_UPDATE_REPRICE.get(submarket);
-        if (last != null && now - last < MIN_CARGO_UPDATE_REPRICE_INTERVAL_MS) {
             return true;
         }
-        LAST_CARGO_UPDATE_REPRICE.put(submarket, now);
+
+        CargoAPI cargo = getCargo(submarket, false);
+        if (cargo == null || cargo.getMothballedShips() == null) {
+            return true;
+        }
+
+        List<FleetMemberAPI> members = cargo.getMothballedShips().getMembersListCopy();
+        String signature = buildCargoShipSignature(members);
+        String previous = LAST_CARGO_UPDATE_SIGNATURE.get(submarket);
+        if (signature.equals(previous)) {
+            return true;
+        }
+
+        rememberCargoUpdateSignature(submarket, signature);
         return false;
     }
+
+    private static void rememberCargoUpdateSignature(SubmarketAPI submarket, List<FleetMemberAPI> members) {
+        if (submarket != null) {
+            rememberCargoUpdateSignature(submarket, buildCargoShipSignature(members));
+        }
+    }
+
+    private static void rememberCargoUpdateSignature(SubmarketAPI submarket, String signature) {
+        LAST_CARGO_UPDATE_SIGNATURE.put(submarket, signature);
+    }
+
+    private static String buildCargoShipSignature(List<FleetMemberAPI> members) {
+        if (members == null || members.isEmpty()) {
+            return "0";
+        }
+
+        StringBuilder out = new StringBuilder();
+        out.append(members.size()).append(':');
+        for (FleetMemberAPI member : members) {
+            if (member == null) {
+                out.append("null;");
+                continue;
+            }
+
+            ShipHullSpecAPI spec = member.getHullSpec();
+            out.append(spec == null ? "" : spec.getHullId()).append('|');
+            if (member.getVariant() != null) {
+                out.append(member.getVariant().getHullVariantId()).append('|')
+                        .append(member.getVariant().getHullMods()).append('|')
+                        .append(member.getVariant().getPermaMods());
+            }
+            out.append(';');
+        }
+        return out.toString();
+    }
+
     private static String marketName(SubmarketAPI submarket) {
         MarketAPI market = submarket.getMarket();
         if (market == null) {
