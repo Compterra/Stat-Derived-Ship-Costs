@@ -2,7 +2,7 @@
   "id": "stat_derived_ship_costs",
   "name": "Stat-Derived Ship Costs",
   "author": "Computica and Codex",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Derives ship credit value from hull stats, visible D-mod condition, market channel, and local economy context, calibrated against Starsector's campaign economy.",
   "gameVersion": "0.98a-RC8",
   "jars": [
