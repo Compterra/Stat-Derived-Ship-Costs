@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.0.4
+
+- Repackaged the Version Checker download with current 1.0.4 release metadata.
+
 ## Version 1.0.3
 
 - Prevents free player-storage transfers from being treated as ship sales and granting credits.
