@@ -23,6 +23,14 @@ public class SDSCTransactionGuard extends BaseCampaignEventListener {
             return;
         }
 
+        // Storage and other free-transfer submarkets can report moved ships as
+        // "sold". They must never be repriced or credited as market sales.
+        SubmarketAPI submarket = transaction.getSubmarket();
+        if (submarket == null || submarket.getPlugin() == null
+                || !submarket.getPlugin().isParticipatesInEconomy()) {
+            return;
+        }
+
         SDSCSettings settings = SDSCSettings.load();
         if (!settings.enablePricingHooks || "Report Only".equalsIgnoreCase(settings.pricingMode)) {
             return;

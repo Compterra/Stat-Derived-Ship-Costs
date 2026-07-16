@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.0.3
+
+- Prevents free player-storage transfers from being treated as ship sales and granting credits.
+
 ## Version 1.0.2
 
 - Makes cargo-update repricing change-aware so external market viewers such as Stellar Networks do not trigger repeated repricing when the ship roster is unchanged.
