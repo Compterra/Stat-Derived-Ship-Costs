@@ -13,7 +13,7 @@
   "runtime": {
     "enablePricingHooks": true,
     "pricingMode": "Full Market",
-    "debugReports": true,
+"debugReports": true,
     "hullValueMult": 1.0,
     "loadoutValueMult": 1.0,
     "marketContextStrength": 1.0,

@@ -17,7 +17,7 @@ public class SDSCSettings {
 
     public boolean enablePricingHooks;
     public String pricingMode;
-    public boolean debugReports;
+public boolean debugReports;
     public float hullValueMult;
     public float loadoutValueMult;
     public float marketContextStrength;
@@ -39,7 +39,7 @@ public class SDSCSettings {
             SDSCSettings settings = new SDSCSettings(new JSONObject());
             settings.enablePricingHooks = false;
             settings.pricingMode = "Report Only";
-            settings.debugReports = true;
+settings.debugReports = true;
             settings.hullValueMult = 1f;
             settings.loadoutValueMult = 1f;
             settings.marketContextStrength = 1f;
@@ -55,7 +55,7 @@ public class SDSCSettings {
         }
         enablePricingHooks = runtime.optBoolean("enablePricingHooks", true);
         pricingMode = runtime.optString("pricingMode", "Full Market");
-        debugReports = runtime.optBoolean("debugReports", true);
+debugReports = runtime.optBoolean("debugReports", true);
         hullValueMult = (float) runtime.optDouble("hullValueMult", 1.0);
         loadoutValueMult = (float) runtime.optDouble("loadoutValueMult", 1.0);
         marketContextStrength = (float) runtime.optDouble("marketContextStrength", 1.0);
@@ -65,7 +65,7 @@ public class SDSCSettings {
     private void applyLunaOverrides() {
         enablePricingHooks = getLunaBoolean("sdsc_enable_pricing", enablePricingHooks);
         pricingMode = getLunaString("sdsc_pricing_mode", pricingMode);
-        debugReports = getLunaBoolean("sdsc_debug_reports", debugReports);
+debugReports = getLunaBoolean("sdsc_debug_reports", debugReports);
         hullValueMult = getLunaFloat("sdsc_hull_value_mult", hullValueMult);
         loadoutValueMult = getLunaFloat("sdsc_loadout_value_mult", loadoutValueMult);
         marketContextStrength = getLunaFloat("sdsc_market_context_strength", marketContextStrength);

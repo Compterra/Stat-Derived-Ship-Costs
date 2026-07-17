@@ -1,5 +1,36 @@
 # Changelog
 
+## Version 1.1.2
+
+- Propagates stat-derived component values into variant-held hull-spec copies used by modular storefront members.
+- Removes the ineffective full-market member refresh, avoiding thousands of unnecessary stat updates during game load.
+
+## Version 1.1.1
+
+- Adds an enabled-by-default LunaLib option to force-refresh existing storefront and storage fleet members after pricing changes, invalidating cached assembled modular-ship values.
+
+## Version 1.1.0
+
+- Prices modular ships at the component level: core hull specs receive core stat values and every referenced module hull spec receives its own stat-derived value.
+- Uses the assembled core-plus-module total for transaction appraisal without double-counting modules in storefront pricing.
+
+## Version 1.0.9
+
+- Removes the declared base-value floor from active SDSC pricing. Modular hulls are valued only from core and module statistics; declared values are retained solely for restoring vanilla prices when SDSC is disabled.
+
+## Version 1.0.8
+
+- Fixes canonical modular-variant selection and prevents SHIP_WITH_MODULES hulls from being valued below their declared base when module data is incomplete.
+
+## Version 1.0.7
+
+- Fixes modular valuation for variants that declare modules through Starsector's station-module map, including Farsight Drive's Equilibrium.
+
+## Version 1.0.6
+
+- Prices modular hulls as their assembled vessel by including installed canonical module hulls. This fixes Farsight Drive's Equilibrium and other SHIP_WITH_MODULES ships being valued as core hulls only.
+- Restores the declared ship_data.csv base value when SDSC is disabled, repairing saves where older releases had cached a market-specific value as the hull baseline.
+
 ## Version 1.0.5
 
 - Fixes LunaLib enable/disable handling: disabling SDSC now restores every hull's original base value instead of leaving a prior pricing pass active.

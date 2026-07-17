@@ -4,8 +4,8 @@
     "modVersion":
     {
         "major":1,
-        "minor":0,
-        "patch":5
+        "minor":1,
+        "patch":2
     },
     "starsectorVersion":"0.98a-RC8",
     "directDownloadURL":"https://raw.githubusercontent.com/Compterra/Stat-Derived-Ship-Costs/main/Stat-Derived-Ship-Costs.zip",

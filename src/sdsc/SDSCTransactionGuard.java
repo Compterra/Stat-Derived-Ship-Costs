@@ -139,7 +139,7 @@ public class SDSCTransactionGuard extends BaseCampaignEventListener {
         }
 
         int dMods = formula.countMemberDMods(member);
-        SDSCFormula.HullValueResult result = formula.estimateHull(member.getHullSpec(), dMods);
+        SDSCFormula.HullValueResult result = formula.estimateMemberHull(member);
         if (!result.marketHull) {
             return null;
         }

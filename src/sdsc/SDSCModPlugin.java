@@ -2,20 +2,27 @@ package sdsc;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.ModSpecAPI;
 import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
+import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.loading.specs.g;
 import lunalib.lunaSettings.LunaSettings;
 import lunalib.lunaSettings.LunaSettingsListener;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SDSCModPlugin extends BaseModPlugin {
     public static final String MOD_ID = "stat_derived_ship_costs";
@@ -25,6 +32,8 @@ public class SDSCModPlugin extends BaseModPlugin {
     private static boolean lastApplyAttempted = false;
     private static final Map<ShipHullSpecAPI, Float> ORIGINAL_HULL_VALUES =
             new IdentityHashMap<ShipHullSpecAPI, Float>();
+    private static final Map<String, Float> DECLARED_HULL_VALUES = new HashMap<String, Float>();
+    private static final Set<String> LOADED_DECLARED_VALUE_SOURCES = new HashSet<String>();
 
     @Override
     public void onApplicationLoad() throws Exception {
@@ -93,7 +102,9 @@ public class SDSCModPlugin extends BaseModPlugin {
         try {
             SDSCSettings settings = SDSCSettings.load();
             SDSCFormula formula = new SDSCFormula(settings);
-            List<SDSCFormula.HullValueResult> results = evaluateAllHulls(formula);
+List<SDSCFormula.HullValueResult> results = evaluateAllHulls(formula);
+            Set<String> referencedModuleHullIds = findReferencedModuleHullIds();
+            Map<String, Integer> desiredHullValues = new HashMap<String, Integer>();
 
             boolean apply = settings.enablePricingHooks && !"Report Only".equalsIgnoreCase(settings.pricingMode);
             int applied = 0;
@@ -101,9 +112,10 @@ public class SDSCModPlugin extends BaseModPlugin {
             if (apply) {
                 lastApplyAttempted = true;
                 for (SDSCFormula.HullValueResult result : results) {
-                    if (!result.marketHull) {
+                    if (!result.marketHull && !referencedModuleHullIds.contains(result.hullId)) {
                         continue;
                     }
+                    desiredHullValues.put(result.hullId, result.computedHullValue);
                     if (applyHullValue(result.spec, result.computedHullValue)) {
                         applied++;
                     } else {
@@ -114,7 +126,6 @@ public class SDSCModPlugin extends BaseModPlugin {
                 lastApplyAttempted = false;
                 applied = restoreOriginalHullValues();
             }
-
             if (settings.debugReports || "Report Only".equalsIgnoreCase(settings.pricingMode)) {
                 writeReport(results, reason, settings.pricingMode, applied, failed);
             }
@@ -123,8 +134,7 @@ public class SDSCModPlugin extends BaseModPlugin {
                     + ", mode=" + settings.pricingMode
                     + ", hulls=" + results.size()
                     + ", applied=" + applied
-                    + ", failed=" + failed);
-        } catch (Throwable ex) {
+                    + ", failed=" + failed);        } catch (Throwable ex) {
             LOG.error("Stat-Derived Ship Costs pricing pass failed during " + reason, ex);
         }
     }
@@ -141,10 +151,62 @@ public class SDSCModPlugin extends BaseModPlugin {
         return results;
     }
 
+    private static int applyVariantHullValues(Map<String, Integer> desiredHullValues) {
+        if (desiredHullValues == null || desiredHullValues.isEmpty()) {
+            return 0;
+        }
+        Set<ShipHullSpecAPI> updated = java.util.Collections.newSetFromMap(
+                new IdentityHashMap<ShipHullSpecAPI, Boolean>());
+        int applied = 0;
+        for (String variantId : Global.getSettings().getAllVariantIds()) {
+            try {
+                ShipVariantAPI variant = Global.getSettings().getVariant(variantId);
+                ShipHullSpecAPI spec = variant == null ? null : variant.getHullSpec();
+                if (spec == null || !updated.add(spec)) {
+                    continue;
+                }
+                Integer value = desiredHullValues.get(spec.getHullId());
+                if (value != null && applyHullValue(spec, value)) {
+                    applied++;
+                }
+            } catch (Throwable ignored) {
+            }
+        }
+        return applied;
+    }
+    private static Set<String> findReferencedModuleHullIds() {
+        Set<String> result = new HashSet<String>();
+        for (String variantId : Global.getSettings().getAllVariantIds()) {
+            try {
+                ShipVariantAPI variant = Global.getSettings().getVariant(variantId);
+                if (variant == null) {
+                    continue;
+                }
+                if (variant.getModuleSlots() != null) {
+                    for (String slotId : variant.getModuleSlots()) {
+                        addModuleHullId(result, variant.getModuleVariant(slotId));
+                    }
+                }
+                if (variant.getStationModules() != null) {
+                    for (String moduleVariantId : variant.getStationModules().values()) {
+                        addModuleHullId(result, Global.getSettings().getVariant(moduleVariantId));
+                    }
+                }
+            } catch (Throwable ignored) {
+            }
+        }
+        return result;
+    }
+
+    private static void addModuleHullId(Set<String> target, ShipVariantAPI module) {
+        if (module != null && module.getHullSpec() != null && module.getHullSpec().getHullId() != null) {
+            target.add(module.getHullSpec().getHullId());
+        }
+    }
     static synchronized boolean applyHullValue(ShipHullSpecAPI spec, int value) {
         if (spec instanceof g) {
             if (!ORIGINAL_HULL_VALUES.containsKey(spec)) {
-                ORIGINAL_HULL_VALUES.put(spec, spec.getBaseValue());
+                ORIGINAL_HULL_VALUES.put(spec, declaredHullValue(spec));
             }
             ((g) spec).setBaseValue((float) value);
             return true;
@@ -154,6 +216,36 @@ public class SDSCModPlugin extends BaseModPlugin {
         return false;
     }
 
+    static synchronized float declaredHullValue(ShipHullSpecAPI spec) {
+        if (spec == null) {
+            return 0f;
+        }
+        ModSpecAPI source = spec.getSourceMod();
+        String sourceId = source == null ? "starsector-core" : source.getId();
+        String key = sourceId + "\u0000" + spec.getHullId();
+        if (!LOADED_DECLARED_VALUE_SOURCES.contains(sourceId)) {
+            LOADED_DECLARED_VALUE_SOURCES.add(sourceId);
+            try {
+                JSONArray rows = Global.getSettings().getMergedSpreadsheetDataForMod(
+                        "id", "data/hulls/ship_data.csv", sourceId);
+                for (int i = 0; i < rows.length(); i++) {
+                    JSONObject row = rows.optJSONObject(i);
+                    if (row == null) {
+                        continue;
+                    }
+                    String hullId = row.optString("id", "");
+                    float value = (float) row.optDouble("base value", -1d);
+                    if (!hullId.isEmpty() && value >= 0f) {
+                        DECLARED_HULL_VALUES.put(sourceId + "\u0000" + hullId, value);
+                    }
+                }
+            } catch (Throwable ex) {
+                LOG.warn("Unable to load declared hull values for " + sourceId + "; using current values.", ex);
+            }
+        }
+        Float declared = DECLARED_HULL_VALUES.get(key);
+        return declared == null ? spec.getBaseValue() : declared;
+    }
     private static synchronized int restoreOriginalHullValues() {
         int restored = 0;
         for (Map.Entry<ShipHullSpecAPI, Float> entry : ORIGINAL_HULL_VALUES.entrySet()) {

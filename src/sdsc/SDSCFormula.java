@@ -69,6 +69,10 @@ public class SDSCFormula {
     }
 
     public HullValueResult estimateHull(ShipHullSpecAPI spec, int visibleDMods) {
+        return estimateHull(spec, visibleDMods, true);
+    }
+
+    private HullValueResult estimateHull(ShipHullSpecAPI spec, int visibleDMods, boolean includeModules) {
         String sizeKey = sizeKey(spec.getHullSize());
         float floor = settings.getSizeValue("hullSizeFloor", sizeKey, 0f);
         float value = floor;
@@ -127,9 +131,76 @@ public class SDSCFormula {
                 ? floor * settings.get("condition", "damagedHullFloorFraction", 0.02f)
                 : floor;
         int computed = Math.max(Math.round(finalFloor), roundTo100(value));
+        if (includeModules) {
+            computed += moduleHullValue(spec);
+
+        }
         return new HullValueResult(spec, sizeKey, computed, isMarketHull(spec), marketNotes(spec, builtInDMods, pricedDMods, exactDMods));
     }
 
+    private int moduleHullValue(ShipHullSpecAPI spec) {
+        return moduleHullValue(canonicalVariant(spec));
+    }
+
+    private int moduleHullValue(ShipVariantAPI variant) {
+        if (variant == null) {
+            return 0;
+        }
+
+        Set<String> seenVariantIds = new HashSet<String>();
+        int total = 0;
+        if (variant.getModuleSlots() != null) {
+            for (String slotId : variant.getModuleSlots()) {
+                ShipVariantAPI module = variant.getModuleVariant(slotId);
+                if (module != null && module.getHullSpec() != null
+                        && seenVariantIds.add(module.getHullVariantId())) {
+                    total += estimateHull(module.getHullSpec(), -1, false).computedHullValue;
+                }
+            }
+        }
+        if (variant.getStationModules() != null) {
+            for (String variantId : variant.getStationModules().values()) {
+                ShipVariantAPI module = Global.getSettings().getVariant(variantId);
+                if (module != null && module.getHullSpec() != null
+                        && seenVariantIds.add(module.getHullVariantId())) {
+                    total += estimateHull(module.getHullSpec(), -1, false).computedHullValue;
+                }
+            }
+        }
+        return total;
+    }
+    private boolean hasModules(ShipVariantAPI variant) {
+        return variant != null && ((variant.getModuleSlots() != null && !variant.getModuleSlots().isEmpty())
+                || (variant.getStationModules() != null && !variant.getStationModules().isEmpty()));
+    }
+    private ShipVariantAPI canonicalVariant(ShipHullSpecAPI spec) {
+        if (spec == null || Global.getSettings() == null) {
+            return null;
+        }
+        try {
+            String codexVariantId = safe(spec.getCodexVariantId());
+            if (!codexVariantId.isEmpty()) {
+                ShipVariantAPI variant = Global.getSettings().getVariant(codexVariantId);
+                if (hasModules(variant)) {
+                    return variant;
+                }
+            }
+
+            List<String> variantIds = Global.getSettings().getHullIdToVariantListMap().get(spec.getHullId());
+            if (variantIds == null) {
+                return null;
+            }
+            for (String variantId : variantIds) {
+                ShipVariantAPI variant = Global.getSettings().getVariant(variantId);
+                if (hasModules(variant)) {
+
+                    return variant;
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+        return null;
+    }
     private float defenseValue(ShipHullSpecAPI spec, String sizeKey) {
         ShipHullSpecAPI.ShieldSpecAPI shield = spec.getShieldSpec();
         ShieldAPI.ShieldType type = spec.getShieldType();
@@ -197,12 +268,12 @@ public class SDSCFormula {
         if (spec.getHullSize() == ShipAPI.HullSize.FIGHTER) {
             return false;
         }
-        String tokens = marketTokens(spec);
-        if (tokens.contains("hide_in_codex") && !spec.isDHull()) {
+        if (hasMarketToken(spec, "hide_in_codex") && !spec.isDHull()) {
             return false;
         }
         String[] excluded = {
                 "module",
+                "station_module",
                 "station",
                 "unboardable",
                 "no_dealer",
@@ -215,7 +286,7 @@ public class SDSCFormula {
                 "omega"
         };
         for (String token : excluded) {
-            if (tokens.contains(token)) {
+            if (hasMarketToken(spec, token)) {
                 return false;
             }
         }
@@ -244,11 +315,10 @@ public class SDSCFormula {
         if (spec.getBuiltInMods().contains("civgrade")) {
             notes.add("civgrade");
         }
-        String tags = marketTokens(spec);
-        if (tags.contains("restricted")) {
+        if (hasMarketToken(spec, "restricted")) {
             notes.add("restricted");
         }
-        if (tags.contains("no_sell")) {
+        if (hasMarketToken(spec, "no_sell")) {
             notes.add("no-sell");
         }
         return String.join(";", notes);
@@ -340,16 +410,26 @@ public class SDSCFormula {
         return FALLBACK_D_MOD_IDS.contains(id);
     }
 
-    private String marketTokens(ShipHullSpecAPI spec) {
-        StringBuilder tokens = new StringBuilder();
+    private boolean hasMarketToken(ShipHullSpecAPI spec, String expected) {
+        if (spec == null || expected == null) {
+            return false;
+        }
+        String token = expected.trim().toLowerCase(Locale.ROOT);
         if (spec.getHints() != null) {
-            tokens.append(spec.getHints().toString()).append(' ');
+            for (Object hint : spec.getHints()) {
+                if (token.equals(safe(String.valueOf(hint)).trim().toLowerCase(Locale.ROOT))) {
+                    return true;
+                }
+            }
         }
         if (spec.getTags() != null) {
-            tokens.append(spec.getTags().toString()).append(' ');
+            for (String tag : spec.getTags()) {
+                if (token.equals(safe(tag).trim().toLowerCase(Locale.ROOT))) {
+                    return true;
+                }
+            }
         }
-        tokens.append(safe(spec.getLogisticsNAReason()));
-        return tokens.toString().toLowerCase(Locale.ROOT);
+        return token.equals(safe(spec.getLogisticsNAReason()).trim().toLowerCase(Locale.ROOT));
     }
 
     private int safeOrdnancePoints(ShipHullSpecAPI spec) {
