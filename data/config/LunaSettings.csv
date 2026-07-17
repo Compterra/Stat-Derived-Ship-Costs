@@ -13,7 +13,7 @@ sdsc_dmod_scale_destroyer,D-mod scale destroyer,Double,0.9,,"Multiplier applied 
 sdsc_dmod_scale_cruiser,D-mod scale cruiser,Double,0.8,,"Multiplier applied to D-mod discount severity for cruisers.",0.0,2.0,Appraisal
 sdsc_dmod_scale_capital,D-mod scale capital,Double,0.7,,"Multiplier applied to D-mod discount severity for capitals.",0.0,2.0,Appraisal
 sdsc_dmod_discount_floor,D-mod discount floor,Double,0.05,,"Lowest condition multiplier for common damaged hulls.",0.0,1.0,Appraisal
-sdsc_dhull_min_dmods,D-hull minimum D-mod count,Double,4.0,,"Fallback condition damage count for generated D-hull specs when no live market member listing is available.",0.0,6.0,Appraisal
+sdsc_dhull_min_dmods,D-hull minimum D-mod count,Double,1.0,,"Fallback condition damage count for generated D-hull specs when no live market member listing is available.",0.0,6.0,Appraisal
 sdsc_rare_dmod_floor,Rare hull D-mod floor,Double,0.45,,"Condition floor approached by high-rarity damaged hulls.",0.0,1.0,Appraisal
 sdsc_smod_face_value,S-mod face value fraction,Double,0.0,,"Direct resale value for S-mod investment. Keep at 0 to value only final stats and loadout.",0.0,1.0,Appraisal
 ,,,,,,,,

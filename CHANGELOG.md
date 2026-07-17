@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.1.4
+
+- Completes the D-hull baseline fix by updating the LunaLib default and runtime settings fallback from four assumed D-mods to one.
+
 ## Version 1.1.3
 
 - Reduces the generic D-hull baseline from four assumed D-mods to one, preventing excessive capital-ship devaluation while preserving exact member-level D-mod counting.

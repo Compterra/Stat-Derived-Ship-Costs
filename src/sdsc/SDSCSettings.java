@@ -77,7 +77,7 @@ debugReports = getLunaBoolean("sdsc_debug_reports", debugReports);
         set("condition.dModDiscountPerModSizeMult", "CRUISER", getLunaFloat("sdsc_dmod_scale_cruiser", getNestedSizeValue("condition.dModDiscountPerModSizeMult", "CRUISER", 0.8f)));
         set("condition.dModDiscountPerModSizeMult", "CAPITAL_SHIP", getLunaFloat("sdsc_dmod_scale_capital", getNestedSizeValue("condition.dModDiscountPerModSizeMult", "CAPITAL_SHIP", 0.7f)));
         set("condition", "dModDiscountFloor", getLunaFloat("sdsc_dmod_discount_floor", get("condition", "dModDiscountFloor", 0.05f)));
-        set("condition", "dHullMinimumDModCount", getLunaFloat("sdsc_dhull_min_dmods", get("condition", "dHullMinimumDModCount", 4f)));
+        set("condition", "dHullMinimumDModCount", getLunaFloat("sdsc_dhull_min_dmods", get("condition", "dHullMinimumDModCount", 1f)));
         set("condition", "sModFaceValueFraction", getLunaFloat("sdsc_smod_face_value", get("condition", "sModFaceValueFraction", 0f)));
 
         set("marketContext", "rareHullDModFloor", getLunaFloat("sdsc_rare_dmod_floor", get("marketContext", "rareHullDModFloor", 0.45f)));
