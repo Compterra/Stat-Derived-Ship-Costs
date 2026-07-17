@@ -4,7 +4,6 @@ import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.listeners.ListenerManagerAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.loading.specs.g;
 import lunalib.lunaSettings.LunaSettings;
@@ -14,7 +13,9 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SDSCModPlugin extends BaseModPlugin {
     public static final String MOD_ID = "stat_derived_ship_costs";
@@ -22,6 +23,8 @@ public class SDSCModPlugin extends BaseModPlugin {
 
     private static boolean listenerRegistered = false;
     private static boolean lastApplyAttempted = false;
+    private static final Map<ShipHullSpecAPI, Float> ORIGINAL_HULL_VALUES =
+            new IdentityHashMap<ShipHullSpecAPI, Float>();
 
     @Override
     public void onApplicationLoad() throws Exception {
@@ -33,21 +36,18 @@ public class SDSCModPlugin extends BaseModPlugin {
     public void onGameLoad(boolean newGame) {
         registerSectorListener();
         runPricingPass(newGame ? "new-game-load" : "game-load");
-        SDSCMarketListener.repriceAllMarkets(newGame ? "new-game-load" : "game-load");
     }
 
     @Override
     public void onNewGameAfterEconomyLoad() {
         registerSectorListener();
         runPricingPass("new-game-after-economy-load");
-        SDSCMarketListener.repriceAllMarkets("new-game-after-economy-load");
     }
 
     @Override
     public void onDevModeF8Reload() {
         registerSectorListener();
         runPricingPass("devmode-reload");
-        SDSCMarketListener.repriceAllMarkets("devmode-reload");
     }
 
     private static void registerLunaListener() {
@@ -69,11 +69,6 @@ public class SDSCModPlugin extends BaseModPlugin {
             SectorAPI sector = Global.getSector();
             if (sector == null) {
                 return;
-            }
-            ListenerManagerAPI listeners = sector.getListenerManager();
-            if (listeners != null && !listeners.hasListenerOfClass(SDSCMarketListener.class)) {
-                listeners.addListener(new SDSCMarketListener(), true);
-                LOG.info("Registered Stat-Derived Ship Costs submarket listener.");
             }
             replaceTransactionGuardWithTransient(sector);
         } catch (Throwable ex) {
@@ -117,6 +112,7 @@ public class SDSCModPlugin extends BaseModPlugin {
                 }
             } else {
                 lastApplyAttempted = false;
+                applied = restoreOriginalHullValues();
             }
 
             if (settings.debugReports || "Report Only".equalsIgnoreCase(settings.pricingMode)) {
@@ -145,8 +141,11 @@ public class SDSCModPlugin extends BaseModPlugin {
         return results;
     }
 
-    static boolean applyHullValue(ShipHullSpecAPI spec, int value) {
+    static synchronized boolean applyHullValue(ShipHullSpecAPI spec, int value) {
         if (spec instanceof g) {
+            if (!ORIGINAL_HULL_VALUES.containsKey(spec)) {
+                ORIGINAL_HULL_VALUES.put(spec, spec.getBaseValue());
+            }
             ((g) spec).setBaseValue((float) value);
             return true;
         }
@@ -155,6 +154,18 @@ public class SDSCModPlugin extends BaseModPlugin {
         return false;
     }
 
+    private static synchronized int restoreOriginalHullValues() {
+        int restored = 0;
+        for (Map.Entry<ShipHullSpecAPI, Float> entry : ORIGINAL_HULL_VALUES.entrySet()) {
+            ShipHullSpecAPI spec = entry.getKey();
+            if (spec instanceof g && entry.getValue() != null) {
+                ((g) spec).setBaseValue(entry.getValue());
+                restored++;
+            }
+        }
+        ORIGINAL_HULL_VALUES.clear();
+        return restored;
+    }
     private static void writeReport(List<SDSCFormula.HullValueResult> results, String reason,
                                     String pricingMode, int applied, int failed) {
         StringBuilder out = new StringBuilder();
@@ -201,7 +212,6 @@ public class SDSCModPlugin extends BaseModPlugin {
         public void settingsChanged(String modID) {
             if (MOD_ID.equals(modID)) {
                 runPricingPass("lunalib-settings-changed");
-                SDSCMarketListener.repriceAllMarkets("lunalib-settings-changed");
             }
         }
     }

@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 1.0.5
+
+- Fixes LunaLib enable/disable handling: disabling SDSC now restores every hull's original base value instead of leaving a prior pricing pass active.
+- Stops writing market- and D-mod-specific values into globally shared hull specifications. This removes cross-market price contamination and stale tooltip prices.
+- Removes the static submarket signature cache and repeated full-economy repricing pass, eliminating the campaign-object retention path and substantial load-time JSON/log spam.
+- Keeps market-context adjustments in the transaction guard, where the actual market and individual ship condition are available.
+
 ## Version 1.0.4
 
 - Repackaged the Version Checker download with current 1.0.4 release metadata.

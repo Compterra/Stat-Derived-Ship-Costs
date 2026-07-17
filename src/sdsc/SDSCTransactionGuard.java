@@ -51,8 +51,6 @@ public class SDSCTransactionGuard extends BaseCampaignEventListener {
             adjustPlayerCredits(adjustment.creditDelta);
         }
 
-        SDSCMarketListener.repriceSubmarket(transaction.getSubmarket(), "transaction-guard", true);
-
         if (settings.debugReports && adjustment.shouldLog()) {
             LOG.info("Stat-Derived Ship Costs transaction guard: boughtRefunded=" + adjustment.boughtRefunded
                     + ", boughtUnderpriced=" + adjustment.boughtUnderpriced
