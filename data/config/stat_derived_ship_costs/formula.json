@@ -127,7 +127,7 @@
       "CRUISER": 0.05,
       "CAPITAL_SHIP": 0.22
     },
-    "dHullMinimumDModCount": 4.0,
+    "dHullMinimumDModCount": 1.0,
     "damagedHullFloorFraction": 0.02,
     "structuralDModExtraPenalty": 0.08,
     "maxStructuralDModExtraPenalty": 0.2,

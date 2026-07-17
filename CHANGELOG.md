@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.1.3
+
+- Reduces the generic D-hull baseline from four assumed D-mods to one, preventing excessive capital-ship devaluation while preserving exact member-level D-mod counting.
+
 ## Version 1.1.2
 
 - Propagates stat-derived component values into variant-held hull-spec copies used by modular storefront members.

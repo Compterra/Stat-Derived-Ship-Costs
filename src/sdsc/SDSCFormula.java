@@ -335,7 +335,7 @@ public class SDSCFormula {
     private int pricedDModCount(ShipHullSpecAPI spec, int builtInDMods) {
         int count = Math.max(0, builtInDMods);
         if (spec != null && spec.isDHull()) {
-            int minimum = Math.round(settings.get("condition", "dHullMinimumDModCount", 4f));
+            int minimum = Math.round(settings.get("condition", "dHullMinimumDModCount", 1f));
             count = Math.max(count, minimum);
         }
         return count;
