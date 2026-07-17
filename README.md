@@ -38,4 +38,4 @@ TriOS and Version Checker:
 
 - `data/config/version/version_files.csv` points at `stat_derived_ship_costs.version`.
 - `stat_derived_ship_costs.version` points at the raw online master file on GitHub.
-- The current Version Checker download URL points at the repository copy: `https://raw.githubusercontent.com/Compterra/Stat-Derived-Ship-Costs/main/Stat-Derived-Ship-Costs.zip`.
+- The current Version Checker download URL points at the repository copy: `https://github.com/Compterra/Stat-Derived-Ship-Costs/archive/refs/heads/main.zip`.

@@ -8,6 +8,6 @@
         "patch":2
     },
     "starsectorVersion":"0.98a-RC8",
-    "directDownloadURL":"https://raw.githubusercontent.com/Compterra/Stat-Derived-Ship-Costs/main/Stat-Derived-Ship-Costs.zip",
+    "directDownloadURL":"https://github.com/Compterra/Stat-Derived-Ship-Costs/archive/refs/heads/main.zip",
     "changelogURL":"https://raw.githubusercontent.com/Compterra/Stat-Derived-Ship-Costs/main/CHANGELOG.md"
 }
